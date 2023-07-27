@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LivroController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/cadastro', function () {
+    return view('livro.store');
+})->name('home');
+Route::redirect('/', '/cadastro');
+Route::get('/livros', [LivroController::class, 'show'])->name('show');
+Route::get('/livros/{id}', [LivroController::class, 'edit'])->name('edit');
+Route::post('/store', [LivroController::class, 'store'])->name('store');
