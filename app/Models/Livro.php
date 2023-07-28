@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Livros extends Model
+class Livro extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'titulo',
         'autor',
+        'endereco_id',
         'editora',
         'ano_de_publicacao',
         'descricao',
@@ -20,6 +21,11 @@ class Livros extends Model
         'isbn',
         'capa',
     ];
+
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
+    }
 
     public function ano_de_publicacao()
     {

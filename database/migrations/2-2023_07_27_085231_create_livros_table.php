@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('titulo');
             $table->string('autor');
+            $table->foreignId('endereco_id')->unique()->constrained('enderecos')->onUpdate('cascade');
             $table->string('editora');
             $table->date('ano_de_publicacao');
             $table->text('descricao');

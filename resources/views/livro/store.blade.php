@@ -5,7 +5,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Cadastrar Livro</h3>
                 </div>
-                <x-post-livro/>
+                <x-post-livro :action="route('store')"/>
             </div>
         </div>
     </div>

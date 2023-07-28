@@ -14,6 +14,8 @@
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <!-- Tabler CSS -->
     <link rel="stylesheet" href="{{asset('assets/css/tabler.min.css')}}">
+    <!-- DataTable CSS -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
 </head>
 <body class="antialiased">
 <script src="{{asset('assets/js/theme.js')}}"></script>
@@ -72,7 +74,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('show') }}">
+                            <a class="nav-link" href="{{ route('books') }}">
                                 <span class="nav-link-icon d-md-none d-lg-inline-block">
                                   <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                                        viewBox="0 0 24 24"
@@ -91,20 +93,14 @@
                 </div>
             </div>
         </div>
-        <script>
-            $(document).ready(function () {
-                let url = window.location
-                let item = $('li.nav-item a[href="' + url + '"]')
-
-                if (item.attr('class') === 'dropdown-item') {
-                    item.addClass('active')
-                    item.parent().parent().parent().parent().addClass('active')
-                } else {
-                    item.parent().addClass('active')
-                }
-            });
-        </script>
     </header>
+    @if(session('success'))
+        <div class="alert alert-dismissible alert-success bg-body-tertiary fade mb-0 mt-3 show text-center"
+             role="alert">
+            <strong>{{session('success')}}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
     <div class="page-wrapper">
         {{$slot}}
     </div>
@@ -112,5 +108,30 @@
 
 <!-- Tabler Core -->
 <script src="{{asset('assets/js/tabler.min.js')}}"></script>
+<!-- viaCep -->
+<script src="{{asset('assets/js/viaCep.js')}}"></script>
+<!-- Data Tables JS -->
+<script src="//cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function () {
+        let table = new DataTable('#table', {
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Portuguese-Brasil.json"
+            },
+            dom: 'f',
+            pageLength: 100,
+        });
+
+        let url = window.location
+        let item = $('li.nav-item a[href="' + url + '"]')
+
+        if (item.attr('class') === 'dropdown-item') {
+            item.addClass('active')
+            item.parent().parent().parent().parent().addClass('active')
+        } else {
+            item.parent().addClass('active')
+        }
+    });
+</script>
 </body>
 </html>

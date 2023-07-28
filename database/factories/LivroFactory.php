@@ -2,19 +2,21 @@
 
 namespace Database\Factories;
 
-use App\Models\Livros;
+use App\Models\Endereco;
+use App\Models\Livro;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
 
-class LivrosFactory extends Factory
+class LivroFactory extends Factory
 {
-    protected $model = Livros::class;
+    protected $model = Livro::class;
 
     public function definition()
     {
         return [
             'titulo' => $this->faker->word(),
             'autor' => $this->faker->name(),
+            'endereco_id' => self::factoryForModel(Endereco::class)->create()->id,
             'editora' => $this->faker->company(),
             'ano_de_publicacao' => Carbon::now(),
             'descricao' => $this->faker->text(),
