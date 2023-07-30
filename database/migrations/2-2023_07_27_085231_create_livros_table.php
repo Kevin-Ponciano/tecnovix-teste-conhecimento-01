@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('autor');
             $table->foreignId('endereco_id')->unique()->constrained('enderecos')->onUpdate('cascade');
             $table->string('editora');
-            $table->date('ano_de_publicacao');
+            $table->string('ano_de_publicacao');
             $table->text('descricao');
             $table->integer('paginas');
             $table->char('isbn', 13)->unique();

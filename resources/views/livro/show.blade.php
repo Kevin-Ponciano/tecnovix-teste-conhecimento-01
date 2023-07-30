@@ -7,7 +7,7 @@
                     <div class="row">
                         <div class="col-auto">
                             <span class="avatar avatar-2xl"
-                                  style="background-image: url('{{ asset('storage/capas/'.$livro->capa) }}')">
+                                  style="background-image: url('{{Storage::disk()->temporaryUrl('capas/' . $livro->capa,now())}}')">
                             </span>
                         </div>
                         <div class="col-2">
@@ -23,7 +23,7 @@
                         <div class="col">
                             <div class="mb-3">
                                 <div class="form-label">Ano de Publicação</div>
-                                <p>{{$livro->ano_de_publicacao()}}</p>
+                                <p>{{$livro->ano_de_publicacao}}</p>
                             </div>
                             <div class="mb-3">
                                 <div class="form-label">Páginas</div>

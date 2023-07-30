@@ -24,7 +24,7 @@
                                     <td>
                                         <div class="d-flex py-1 align-items-center">
                                             <span class="avatar me-2 avatar-lg"
-                                                  style="background-image: url('{{ asset('storage/capas/'.$livro->capa) }}')"></span>
+                                                  style="background-image: url('{{Storage::disk()->temporaryUrl('capas/' . $livro->capa,now())}}')"></span>
                                             <div class="flex-fill text-start">
                                                 <div class="font-weight-medium">{{$livro->titulo}}</div>
                                             </div>
@@ -37,7 +37,7 @@
                                         <div>{{$livro->editora}}</div>
                                         <div class="text-muted">
                                             <div>Ano de Publicação</div>
-                                            <span>{{$livro->ano_de_publicacao()}}</span>
+                                            <span>{{$livro->ano_de_publicacao}}</span>
                                         </div>
                                     </td>
                                     <td class="text-muted">
