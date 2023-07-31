@@ -7,7 +7,7 @@
                     <div class="row">
                         <div class="col-auto">
                             <span class="avatar avatar-2xl"
-                                  style="background-image: url('{{Storage::disk()->temporaryUrl('capas/' . $livro->capa,now())}}')">
+                                  style="background-image: url('{{Storage::temporaryUrl($livro->capa,now())}}')">
                             </span>
                         </div>
                         <div class="col-2">

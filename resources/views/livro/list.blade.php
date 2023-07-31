@@ -24,7 +24,7 @@
                                     <td>
                                         <div class="d-flex py-1 align-items-center">
                                             <span class="avatar me-2 avatar-lg"
-                                                  style="background-image: url('{{Storage::disk()->temporaryUrl('capas/' . $livro->capa,now())}}')"></span>
+                                                  style="background-image: url('{{Storage::temporaryUrl($livro->capa,now())}}')"></span>
                                             <div class="flex-fill text-start">
                                                 <div class="font-weight-medium">{{$livro->titulo}}</div>
                                             </div>

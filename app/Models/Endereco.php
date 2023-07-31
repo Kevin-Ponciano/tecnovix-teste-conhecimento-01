@@ -17,11 +17,12 @@ class Endereco extends Model
         'cidade',
         'uf',
         'cep',
+        'livro_id'
     ];
 
 
     public function livro()
     {
-        return $this->hasOne(Livro::class);
+        return $this->belongsTo(Livro::class);
     }
 }
