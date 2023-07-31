@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string('cidade');
             $table->char('uf', 2);
             $table->char('cep', 9);
+            $table->foreignId('livro_id')->unique()->constrained('livros')
+                ->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
         });
     }

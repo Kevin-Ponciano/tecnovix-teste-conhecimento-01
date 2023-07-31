@@ -13,6 +13,30 @@ use Storage;
 
 class LivroController extends Controller
 {
+    // Metodo da API
+    public function getBook($isbn)
+    {
+        $livro = Livro::where('isbn', $isbn)->first();
+        if ($livro) {
+            return response()->json($livro);
+        } else {
+            $livroApi = $this->searchBookAPI($isbn);
+            $capa = 'capas/' . $isbn . '.jpeg';
+            Storage::put($capa, file_get_contents($livroApi['imageLinks']['smallThumbnail']));
+            $livro = Livro::create([
+                'titulo' => $livroApi['title'] ?? 'Não informado',
+                'autor' => $livroApi['authors'][0] ?? 'Não informado',
+                'isbn' => $isbn,
+                'editora' => $livroApi['publisher'] ?? 'Não informado',
+                'ano_de_publicacao' => $livroApi['publishedDate'] ?? 'Não informado',
+                'descricao' => $livroApi['description'] ?? 'Não informado',
+                'paginas' => $livroApi['pageCount'] ?? 'Não informado',
+                'capa' => $capa,
+            ]);
+            return response()->json($livro);
+        }
+    }
+
     public function searchBookAPI($isbn)
     {
         $response = HTTP::withOptions([
@@ -48,21 +72,11 @@ class LivroController extends Controller
         $ano_de_publicacao = $livro['publishedDate'] ?? 'Não informado';
         $descricao = $livro['description'] ?? 'Não informado';
         $paginas = $livro['pageCount'] ?? 'Não informado';
-        $capa = $request['isbn'] . '_' . $request['capa']->getClientOriginalName();
-
-        $endereco = Endereco::create([
-            'rua' => $request['rua'],
-            'numero' => $request['numero'] ?? 'S/N',
-            'bairro' => $request['bairro'],
-            'cidade' => $request['cidade'],
-            'uf' => $request['uf'],
-            'cep' => $request['cep'],
-        ]);
+        $capa = 'capas/' . $request['isbn'] . '_' . $request['capa']->getClientOriginalName();
 
         Livro::create([
             'titulo' => $titulo,
             'autor' => $autor,
-            'endereco_id' => $endereco->id,
             'editora' => $editora,
             'ano_de_publicacao' => $ano_de_publicacao,
             'descricao' => $descricao,
@@ -70,7 +84,18 @@ class LivroController extends Controller
             'isbn' => $request['isbn'],
             'capa' => $capa,
         ]);
-        $request->file('capa')->storeAs('capas', $capa);
+
+        Endereco::create([
+            'rua' => $request['rua'],
+            'numero' => $request['numero'] ?? 'S/N',
+            'bairro' => $request['bairro'],
+            'cidade' => $request['cidade'],
+            'uf' => $request['uf'],
+            'cep' => $request['cep'],
+            'livro_id' => Livro::where('isbn', $request['isbn'])->first()->id,
+        ]);
+
+        $request->file('capa')->storeAs('', $capa);
 
         session()->flash('success', "Livro registrado com sucesso!");
         return redirect()->route('home');
@@ -99,22 +124,11 @@ class LivroController extends Controller
             'capa' => 'image|max:2048',
         ]);
 
-
-        Endereco::updated([
-            'id' => $request['endereco_id'],
-            'rua' => $request['rua'],
-            'numero' => $request['numero'] ?? 'S/N',
-            'bairro' => $request['bairro'],
-            'cidade' => $request['cidade'],
-            'uf' => $request['uf'],
-            'cep' => $request['cep'],
-        ]);
-
         $livro = Livro::find($id);
         if ($request->hasFile('capa')) {
-            Storage::disk()->delete('capas/' . $livro->capa);
-            $capa = $livro->isbn . '_' . $request['capa']->getClientOriginalName();
-            $path = $request->file('capa')->storeAs('capas', $capa);
+            Storage::disk()->delete($livro->capa);
+            $capa = 'capas/' . $livro->isbn . '_' . $request['capa']->getClientOriginalName();
+            $request->file('capa')->storeAs('', $capa);
         } else {
             $capa = $livro->capa;
         }
@@ -128,6 +142,14 @@ class LivroController extends Controller
             'autor' => $request['autor'],
             'capa' => $capa,
         ]);
+        $livro->endereco()->updateOrCreate(['id' => $livro->endereco->id ?? null,], [
+            'rua' => $request['rua'],
+            'numero' => $request['numero'],
+            'bairro' => $request['bairro'],
+            'cidade' => $request['cidade'],
+            'uf' => $request['uf'],
+            'cep' => $request['cep'],
+        ]);
 
         session()->flash('success', "Livro atualizado com sucesso!");
         return redirect()->route('books');
@@ -136,7 +158,9 @@ class LivroController extends Controller
     public function destroy($id)
     {
         $livro = Livro::findOrFail($id);
-        Storage::disk()->delete('capas/' . $livro->capa);
+        Storage::disk()->delete('' . $livro->capa);
+        if ($livro->endereco)
+            $livro->endereco->delete();
         $livro->delete();
         session()->flash('success', "Livro excluído com sucesso!");
         return redirect()->route('books');

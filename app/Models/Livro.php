@@ -12,7 +12,6 @@ class Livro extends Model
     protected $fillable = [
         'titulo',
         'autor',
-        'endereco_id',
         'editora',
         'ano_de_publicacao',
         'descricao',
@@ -23,6 +22,6 @@ class Livro extends Model
 
     public function endereco()
     {
-        return $this->belongsTo(Endereco::class);
+        return $this->hasOne(Endereco::class);
     }
 }
