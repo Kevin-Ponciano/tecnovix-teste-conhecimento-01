@@ -7,9 +7,9 @@ use App\Models\Endereco;
 use App\Models\Livro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Storage;
 
 class LivroController extends Controller
 {
@@ -158,7 +158,7 @@ class LivroController extends Controller
     public function destroy($id)
     {
         $livro = Livro::findOrFail($id);
-        Storage::disk()->delete('' . $livro->capa);
+        Storage::disk()->delete($livro->capa);
         if ($livro->endereco)
             $livro->endereco->delete();
         $livro->delete();
